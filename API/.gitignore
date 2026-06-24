@@ -1,5 +1,2 @@
-.env
 node_modules/
-README.md
-.dockerignore
-Dockerfile
+.env
