@@ -18,6 +18,9 @@ jobs:
             #1. Copiado del codigo del repositorio
             - name: Checkout codigo del repositorio
               uses: actions/checkout@v4
+              with:
+                sparse-checkout: |
+                    API
             
             #2. Configuracion de node js
             - name: Inicializado de ambiente de Node.js
@@ -25,6 +28,7 @@ jobs:
               with:
                 node-version: '24'
                 cache: 'npm'
+                cache-dependency-path: './API/package-lock.json'
 
             #3. Creacion de archivo .env simulado para su uso en el pipeline
             - name: Creacion archivo .env para pruebas
