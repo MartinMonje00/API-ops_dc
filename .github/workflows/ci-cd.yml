@@ -1,0 +1,59 @@
+name: API Ops CI/CD Pipeline
+
+on:
+    push:
+        branches: [ "main" ]
+    pull_request:
+        branches: [ "main" ]
+
+jobs:
+    validate-and-test:
+        runs-on: ubuntu-latest
+
+        steps:
+            #1. Copiado del codigo del repositorio
+            - name: Checkout codigo del repositorio
+              uses: actions/checkout@v4
+            
+            #2. Configuracion de node js
+            - name: Inicializado de ambiente de Node.js
+              uses: actions/setup-node@v4
+              with:
+                node-version: '24'
+                cache: 'npm'
+
+            #3. Creacion de archivo .env simulado para su uso en el pipeline
+            - name: Creacion archivo .env para pruebas
+              run: |
+                echo "PORT=3000" >> .env
+                echo "JWT_SECRET=${{ secrets.TEST_JWT_SECRET }}" >> .env
+                echo "DB_HOST=db-service" >> .env
+                echo "DB_USER=${{ secrets.TEST_DB_USER }}" >> .env
+                echo "DB_PASSWORD=${{ secrets.TEST_DB_PASSWORD }}" >> .env
+                echo "DB_NAME=ops_dc_test" >> .env
+                echo "DB_ROOT_PASSWORD=${{ secrets.TEST_DB_ROOT_PASSWORD }}" >> .env
+
+            #4. Validacion de que la compilacion de Docker no falle
+            - name: Build y validacion de stack docker compose
+              run: |
+                docker compose up --build -d
+
+            #5. Espera a que la base de datos pase el Healthcheck configurado en docker-compose.yml
+            - name: Espera por MariaDB a que este en estado Healthy
+              run: |
+                echo "Esperando a que la base de datos inicialice los esquemas"
+                until [ "$(docker inspect --format=='{{.State.Health.Status}}' mariadb_ops_local)" == "healthy" ]; do
+                    sleep 3
+                    echo "Comprobando salud de MariaDB"
+                done
+
+            #6. Auditoria de los logs para asegurar de que Express y MariaDB se levantaron correctamente
+            - name: Comprobacion de logs de los contenedores
+              run: |
+                docker compose logs api-service
+                docker compose logs db-service
+
+            #7. Apagado y limpieza del entorno de pruebas
+            - name: Destruccion de ambiente
+              if: always()
+              run: docker compose down -v
