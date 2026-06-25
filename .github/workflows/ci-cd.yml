@@ -21,6 +21,7 @@ jobs:
               with:
                 node-version: '24'
                 cache: 'npm'
+                cache-dependency-path: './API/package-lock.json'
 
             #3. Creacion de archivo .env simulado para su uso en el pipeline
             - name: Creacion archivo .env para pruebas
