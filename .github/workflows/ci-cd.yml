@@ -51,7 +51,7 @@ jobs:
               run: |
                 echo "Esperando a que la base de datos inicialice los esquemas"
                 for i in {1..30}; do
-                    STATUS=$(docker inspect --format='{{State.Health.Status}}' mariadb_ops_local)
+                    STATUS=$(docker inspect --format='{{.State.Health.Status}}' mariadb_ops_local)
                     echo "Estado actual de MariaDB: $STATUS (Intento $i/30)"
 
                     if [ "$STATUS" == "healthy" ]; then
