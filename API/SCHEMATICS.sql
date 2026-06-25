@@ -1,8 +1,8 @@
 -- SCHEMATICS V1.3
 
-USE ops_dc;
+USE ops_dc_test;
 
-GRANT ALL PRIVILEGES ON ops_dc.* TO 'api_user'@'%';
+GRANT ALL PRIVILEGES ON ops_dc_test.* TO 'api_user'@'%';
 
 FLUSH PRIVILEGES;
 
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS tempLogs (
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-USE ops_dc;
+USE ops_dc_test;
 
 INSERT INTO users (name, email, password, role)
 VALUES (
