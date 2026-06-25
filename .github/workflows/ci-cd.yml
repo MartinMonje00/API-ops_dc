@@ -10,6 +10,10 @@ jobs:
     validate-and-test:
         runs-on: ubuntu-latest
 
+        defaults:
+            run:
+                working-directory: ./API
+
         steps:
             #1. Copiado del codigo del repositorio
             - name: Checkout codigo del repositorio
@@ -21,7 +25,6 @@ jobs:
               with:
                 node-version: '24'
                 cache: 'npm'
-                cache-dependency-path: './API/package-lock.json'
 
             #3. Creacion de archivo .env simulado para su uso en el pipeline
             - name: Creacion archivo .env para pruebas
