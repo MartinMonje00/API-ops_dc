@@ -50,10 +50,7 @@ jobs:
             - name: Espera por MariaDB a que este en estado Healthy
               run: |
                 echo "Esperando a que la base de datos inicialice los esquemas"
-                until [ "$(docker inspect --format=='{{.State.Health.Status}}' mariadb_ops_local)" == "healthy" ]; do
-                    sleep 3
-                    echo "Comprobando salud de MariaDB"
-                done
+                docker compose wait db-service --timeout 90
 
             #6. Auditoria de los logs para asegurar de que Express y MariaDB se levantaron correctamente
             - name: Comprobacion de logs de los contenedores
