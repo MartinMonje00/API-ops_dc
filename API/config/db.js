@@ -10,4 +10,4 @@ const pool = mysql.createPool({
     connectionLimit: 10
 })
 
-module.exports = pool.promise(); //hola
+module.exports = pool.promise();
