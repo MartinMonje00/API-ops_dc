@@ -3,7 +3,7 @@ name: Sincronizacion Bidireccional Automatizada
 on:
     push:
         branches:
-            [ "Feature", "HotFix", "Feature/*", "HotFix/*" ]
+            [ "Feature", "HotFix", "Feature/*" ]
 
 jobs:
     sync-branches:
@@ -37,7 +37,7 @@ jobs:
                     git merge origin/$CURRENT_BRANCH --no-edit
                     git push origin $TARGET_BRANCH
 
-                elif [[ "$CURRENT_BRANCH" == HotFix/* || "$CURRENT_BRANCH" == HotFix ]]; then
+                elif [[ "$CURRENT_BRANCH" == HotFix ]]; then
                     TARGET_BRANCH="Feature"
 
                     echo "Rama objetivo detectada: Sincronizacion hacia $TARGET_BRANCH"
