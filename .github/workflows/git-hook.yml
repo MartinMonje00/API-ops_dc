@@ -3,8 +3,7 @@ name: Sincronizacion Bidireccional Automatizada
 on:
     push:
         branches:
-            - 'Feature/*'
-            - 'HotFix/*'
+            [ "Feature", "HotFix", "Feature/*", "HotFix/*" ]
 
 jobs:
     sync-branches:
