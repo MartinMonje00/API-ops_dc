@@ -30,8 +30,8 @@ jobs:
                 CURRENT_BRANCH=${GITHUB_REF#refs/heads/}
                 echo "Rama de activacion del push: $CURRENT_BRANCH"
 
-                if [[ "$CURRENT_BRANCH" == Feature/* ]]; then
-                    TARGET_BRANCH="HotFix/${CURRENT_BRANCH#Feature/}"
+                if [[ "$CURRENT_BRANCH" == Feature/* || "$CURRENT_BRANCH" == Feature ]]; then
+                    TARGET_BRANCH="HotFix"
 
                     echo "Rama objetivo detectada: Sincronizacion hacia $TARGET_BRANCH"
 
@@ -39,8 +39,8 @@ jobs:
                     git merge origin/$CURRENT_BRANCH --no-edit
                     git push origin $TARGET_BRANCH
 
-                elif [[ "$CURRENT_BRANCH" == HotFix/* ]]; then
-                    TARGET_BRANCH="Feature/${CURRENT_BRANCH#HotFix/}"
+                elif [[ "$CURRENT_BRANCH" == HotFix/* || "$CURRENT_BRANCH" == HotFix ]]; then
+                    TARGET_BRANCH="Feature"
 
                     echo "Rama objetivo detectada: Sincronizacion hacia $TARGET_BRANCH"
 
