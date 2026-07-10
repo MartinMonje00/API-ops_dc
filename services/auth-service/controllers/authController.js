@@ -49,6 +49,6 @@ exports.login = async (req, res) => {
         });
     } catch (error) {
         console.error('Error interno del servidor:', error);
-        res.status(500).json({ code: 'SERVER_INTERNAL_ERROR' })
+        res.status(500).json({ code: 'SERVER_INTERNAL_ERROR' });
     }
 }
