@@ -1,16 +1,18 @@
 -- SCHEMATICS V1.3
 
-USE ops_dc_test;
+USE ops_dc;
 
-GRANT ALL PRIVILEGES ON ops_dc_test.* TO 'api_user'@'%';
+GRANT ALL PRIVILEGES ON ops_dc.* TO 'api_user'@'%';
 
 FLUSH PRIVILEGES;
 
 
+SET GLOBAL event_scheduler = ON;
+
 CREATE TABLE IF NOT EXISTS users (
     user_id CHAR(36) DEFAULT (UUID()) PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(128) NOT NULL,
     role VARCHAR(10) NOT NULL,
     active BOOLEAN DEFAULT TRUE,
@@ -50,11 +52,62 @@ CREATE TABLE IF NOT EXISTS tempLogs (
     humidityPercent DECIMAL(5,2) NOT NULL,
     notes TEXT NOT NULL,
     measuredAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-USE ops_dc_test;
+CREATE TABLE IF NOT EXISTS tempLogsDailyKPIs (
+    kpi_id CHAR(36) DEFAULT (UUID()) PRIMARY KEY,
+    roomName VARCHAR(50) NOT NULL,
+    targetDate DATE NOT NULL,
+    avgTemp FLOAT(5,2) NOT NULL,
+    maxTemp FLOAT(5,2) NOT NULL,
+    minTemp FLOAT(5,2) NOT NULL,
+    avgHumidity FLOAT(5,2) NOT NULL,
+    totalReadings INT NOT NULL,
+    UNIQUE KEY idx_room_date (roomName, targetDate)
+);
+
+CREATE TABLE IF NOT EXISTS tempLogsMonthlyKPIs (
+    kpim_id CHAR(36) DEFAULT (UUID()) PRIMARY KEY,
+    roomName VARCHAR(50) NOT NULL,
+    targetYear INT NOT NULL,
+    targetMonth INT NOT NULL,
+    avgTemp FLOAT(5,2) NOT NULL,
+    maxTemp FLOAT(5,2) NOT NULL,
+    minTemp FLOAT(5,2) NOT NULL,
+    UNIQUE KEY idx_room_month (roomName, targetYear, targetMonth)
+);
+
+DELIMITER $$
+
+CREATE EVENT IF NOT EXISTS evt_archive_and_clean_telemetry
+ON SCHEDULE EVERY 1 DAY
+STARTS (TIMESTAMP(CURRENT_DATE + INTERVAL 1 DAY))
+DO
+BEGIN
+    INSERT INTO tempLogsDailyKPIs (roomName, targetDate, avgTemp, maxTemp, minTemp, avgHumidity, totalReadings)
+    SELECT
+        roomName,
+        DATE(measuredAt) as targetDate,
+        ROUND(AVG(tempC), 2) as avgTemp,
+        MAX(tempC) as maxTemp,
+        MIN(tempC) as minTemp,
+        ROUND(AVG(humidityPercent), 2) as avgHumidity,
+        COUNT(*) as totalReadings
+    FROM tempLogs
+    WHERE measuredAt >= CURRENT_DATE - INTERVAL 1 DAY
+        AND measuredAt < CURRENT_DATE
+    GROUP BY roomName, DATE(measuredAt)
+    ON DUPLICATE KEY UPDATE
+        avgTemp = VALUES(avgTemp), maxTemp = VALUES(maxTemp), minTemp = VALUES(minTemp), avgHumidity = VALUES(avgHumidity), totalReadings = VALUES(totalReadings);
+
+    DELETE FROM tempLogs
+    WHERE measuredAt < CURRENT_DATE - INTERVAL 30 DAY;
+END$$
+
+DELIMITER ;
+
+USE ops_dc;
 
 INSERT INTO users (name, email, password, role)
 VALUES (
@@ -63,29 +116,3 @@ VALUES (
     '$2b$10$UPfQzet9Lc2CMJnjFDHX6O5MCXyxRDDcZ25NnrgRhftfVFHXsZ/LO', --hash de contraseña 123456
     'admin'
 );
-/*
-INSERT INTO incidents (name, type, affected_service, description, severity, state)
-VALUES (
-    '',
-    '',
-    '',
-    '',
-    '',
-    ''
-);
-
-INSERT INTO logBook (category, description, state)
-VALUES (
-    '',
-    '',
-    ''
-);
-
-INSERT INTO tempLogs (roomName, tempC, humidityPercent, notes)
-VALUES (
-    '',
-    '',
-    '',
-    ''
-);
- Inserciones de prueba en desarrollo */

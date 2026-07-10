@@ -21,5 +21,5 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`[SERVER] API corriendo en: http://localhost:${PORT}`);
+    console.log(`[SERVER] Auth service corriendo en: http://localhost:${PORT}`);
 });
