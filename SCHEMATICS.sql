@@ -107,7 +107,6 @@ END$$
 
 DELIMITER ;
 
-USE ops_dc;
 
 INSERT INTO users (name, email, password, role)
 VALUES (
