@@ -6,8 +6,7 @@ const getTempLogs = async (req, res) => {
 
         return res.status(200).json(rows);
     } catch (error) {
-        console.error("Error en getTempLogs:", error);
-        return res.status(500).json ({ error: "Error en recuperacion de telemetria." });
+        return res.status(500).json ({ code: 'SERVER_INTERNAL_ERROR', error: "Error en recuperacion de telemetria." });
     }
 };
 
@@ -55,11 +54,10 @@ const createTempLog = async (req, res) => {
         const [result] = await db.query(query, [roomName, tempC, humidityPercent, finalNotes]);
 
         res.status(201).json({
-            message: 'Metrica termica registrada correctamente',
-            affectedRows: result.affectedRows
+            message: 'Metrica termica registrada correctamente'
         });
     } catch (error) {
-        res.status(500).json({ error: 'Error al registrar metrica termica', details: error.message });
+        res.status(500).json({ code: 'SERVER_INTERNAL_ERROR', error: 'Error al registrar metrica termica' });
     }
 };
 

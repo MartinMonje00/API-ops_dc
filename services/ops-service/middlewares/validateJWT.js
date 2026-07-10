@@ -1,14 +1,11 @@
 const jwt = require('jsonwebtoken');
 
 const validateJWT = (req, res, next) => {
-    console.log("=== ¡ENTRANDO A VALIDATE_JWT! ===");
-    console.log("Cabecera recibida:", req.headers['authorization']);
-
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        return res.status(401).json({ error: 'Acceso denegado. No se proporciono un token de autenticacion.' });
+        return res.status(401).json({ code: 'NO_TOKEN_PROVIDED', error: 'Acceso denegado.' });
     }
 
     try {
@@ -18,7 +15,7 @@ const validateJWT = (req, res, next) => {
 
         next();
     } catch (error) {
-        return res.status(403).json({ error: 'Token invalido o expirado' })
+        return res.status(403).json({ code: 'INVALID_TOKEN_ERROR', error: 'Token invalido o expirado' });
     }
 };
 

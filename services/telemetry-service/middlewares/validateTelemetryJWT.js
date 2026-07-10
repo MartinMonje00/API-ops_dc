@@ -5,20 +5,20 @@ const validateTelemetryJWT = (req, res, next) => {
     const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
 
     if (!token) {
-        return res.status(401).json({ error: "Acceso denegado. (BORRAR EN PRODUCCION) Falta API Key de telemetria" })
+        return res.status(401).json({ code: 'NO_TOKEN_PROVIDED', error: 'Acceso denegado.' })
     }
 
     try {
         const verified = jwt.verify(token, process.env.JWT_SECRET);
 
         if (verified.role !== 'telemetry_agent') {
-            return res.status(403).json({ error: "Acceso denegado. Token no autorizado." });
+            return res.status(403).json({ code: 'FORBIDDEN_ACCESS', error: 'Acceso denegado. Token no autorizado.' });
         }
 
         req.device = verified;
         next();
     } catch (error) {
-        return res.status(403).json({ error: "API Key invalida o corrupta." });
+        return res.status(403).json({ code: 'INVALID_API_KEY', error: 'API Key invalida o corrupta.' });
     }
 }
 

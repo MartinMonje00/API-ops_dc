@@ -6,8 +6,7 @@ const getIncidents = async (req, res) => {
 
         return res.status(200).json(rows);
     } catch (error) {
-        console.log("error en getIncidents:", error);
-        return res.status(500).json({ error: 'Error interno del servidor al obtener los incidentes.' });
+        return res.status(500).json({ code: 'SERVER_INTERNAL_ERROR', error: 'Error interno del servidor.' });
     }
 };
 
@@ -30,9 +29,9 @@ const createIncident = async (req, res) => {
             ]
         );
 
-        res.status(201).json({ message: 'Incidente registrado en la base de datos.', affectedRows: result.affectedRows });
+        res.status(201).json({ message: 'Incidente registrado en la base de datos.' });
     } catch (error) {
-        res.status(500).json({ error: 'Error al registrar el incidente', details: error.message });
+        res.status(500).json({ code: 'SERVER_INTERNAL_ERROR', error: 'Error al registrar el incidente' });
     }
 };
 
@@ -64,10 +63,10 @@ const updateIncident = async (req, res) => {
             id
         ]);
 
-        if (result.affectedRows === 0) return res.status(404).json ({ error: 'Incidente no encontrado' });
+        if (result.affectedRows === 0) return res.status(404).json ({ code: 'NO_RESOURCE_FOUND', error: 'Incidente no encontrado' });
         res.json({ message: 'Incidente actualizado.' });
     } catch (error) {
-        res.status(500).json({ error: 'Error al modificar el incidente', details: error.message });
+        res.status(500).json({ code: 'SERVER_INTERNAL_ERROR', error: 'Error al modificar el incidente' });
     }
 };
 
@@ -77,8 +76,7 @@ const getLogs = async (req, res) => {
 
         return res.status(200).json(rows);
     } catch (error) {
-        console.log("error en getLogs:", error);
-        return res.status(500).json({ error: 'Error interno del servidor al obtener las bitacoras.' });
+        return res.status(500).json({ code: 'SERVER_INTERNAL_ERROR', error: 'Error interno del servidor.' });
     }
 };
 
@@ -89,7 +87,7 @@ const createLog = async (req, res) => {
         const user_id = req.user.id || req.user.user_id || req.body.user_id;
 
         if (!user_id) {
-            return res.status(400).json({ error: "No se pudo asociar un identificador de usuario válido." });
+            return res.status(400).json({ code: 'AUTH_MISSING_USER_ID', error: 'No se pudo asociar un identificador de usuario válido.' });
         }
 
         const query = `
@@ -104,9 +102,9 @@ const createLog = async (req, res) => {
             state || 'Abierto'
         ]);
 
-        res.status(201).json({ message: 'Registro de bitacora guardado con éxito.', affectedRows: result.affectedRows });
+        res.status(201).json({ message: 'Registro de bitacora guardado con éxito.' });
     } catch (error) {
-        res.status(500).json({ error: 'Error al registrar la bitacora', details: error.message });
+        res.status(500).json({ code: 'SERVER_INTERNAL_ERROR', error: 'Error al registrar la bitacora' });
     }
 };
 
@@ -130,10 +128,10 @@ const updateLog = async (req, res) => {
             id
         ]);
 
-        if (result.affectedRows === 0) return res.status(404).json({ error: 'Registro de Bitacora no encontrado' });
+        if (result.affectedRows === 0) return res.status(404).json({ code: 'NO_RESOURCE_FOUND', error: 'Registro de Bitacora no encontrado' });
         res.json({ message: 'Registro de Bitacora actualizado' });
     } catch (error) {
-        res.status(500).json({ error: 'Error al modificar la bitacora', details: error.message });
+        res.status(500).json({ code: 'SERVER_INTERNAL_ERROR', error: 'Error al modificar la bitacora' });
     }
 };
 
