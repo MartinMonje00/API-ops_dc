@@ -40,17 +40,3 @@ Estas siendo las pruebas principales y mas importantes a trabajar en un ambiente
 ## Despliegue global 
 
 Esta etapa se realizara una vez terminada las pruebas de seguridad y rendimiento al servidor donde se va a alojar todo el proyecto. (Más informacion a ser agregada a dias antes del despliegue global).
-
-# Integracion de Pipeline CI/CD
-
-## Pipeline CI en rama Main
-
-Para lo que fue el trabajo en la automatizacion de pruebas y de integracion continua dentro del repositorio, se le hizo una integracion importante a 2 ramas principales de Main y Deployment (Deployment siendo una rama exclusiva para el Pipeline CD)
-
-En la rama Main del repositorio se agrego la automatizacion de pruebas por medio del pipeline CI, donde se hace el uso de 2 contenedores de docker, uno de ellos para simular la base de datos a la cual se va a conectar la API, y otro contenedor donde se va a inicializar la API para testear su conexion con la base de datos, siendo esta una de las pruebas primordiales que se realizan dentro del pipeline CI (Mas pruebas automatizadas van a ser agregadas a futuro).
-
-## Pipeline CD en rama Deployment
-
-Dentro de las acciones de este pipeline, se ejecuta por segunda vez todo lo que esta dentro del pipeline CI por estandar de seguridad (y en el caso de que alguien a futuro realice un pull request a esta rama y no a la rama Main de forma previa).
-
-Despues de la ejecucion del pipeline CI, se ejecuta inmediatamente el pipeline CD al servidor, donde se toman todos los archivos dentro de la carpeta API, exceptuando los archivos docker y archivos que inician con un punto (ya que son considerados archivos basura para el deployment)
