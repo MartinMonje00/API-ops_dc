@@ -1,0 +1,44 @@
+name: CI - Develop Branch
+
+on:
+    push:
+        branches: [ Develop ]
+    pull_request:
+        branches: [ Develop ]
+
+jobs:
+    integration-test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout del codigo
+              uses: actions/checkout@v4
+
+            - name: Creacion archivo .env simulado
+              run: |
+                echo "PORT=3000" >> .env
+                echo "JWT_SECRET=${{ secrets.TEST_JWT_SECRET }}" >> .env
+                echo "DB_HOST=db-service" >> .env
+                echo "DB_USER=${{ secrets.TEST_DB_USER }}" >> .env
+                echo "DB_PASSWORD=${{ secrets.TEST_DB_PASSWORD }}" >> .env
+                echo "DB_NAME=ops_dc" >> .env
+                echo "DB_ROOT_PASSWORD=${{ secrets.TEST_DB_ROOT_PASSWORD }}" >> .env
+            
+            - name: Levantamiento de entorno con docker compose
+              run: docker compose up -d --build
+
+            - name: Espera para que los servicios esten listos
+              run: sleep 10
+
+            - name: Ejecucion de pruebas - auth-service
+              run: docker compose exec -T auth-service npm test --if-present
+
+            - name: Ejecucion de pruebas - ops-service
+              run: docker compose exec -T ops-service npm test --if-present
+
+            - name: Ejecucion de pruebas - telemetry-service
+              run: docker compose exec -T telemetry-service test --if-present
+            
+            - name: Apagado y limpieza de los contenedores
+              if: always()
+              run: docker compose down -v
