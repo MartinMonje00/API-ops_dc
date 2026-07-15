@@ -1,0 +1,34 @@
+name: CI - Develop Branch
+
+on:
+    push:
+        branches: [ Develop ]
+    pull_request:
+        branches: [ Develop ]
+
+jobs:
+    integration-test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout del codigo
+              uses: actions/checkout@v4
+            
+            - name: Levantamiento de entorno con docker compose
+              run: docker compose up -d --build
+
+            - name: Espera para que los servicios esten listos
+              run: sleep 10
+
+            - name: Ejecucion de pruebas - auth-service
+              run: docker compose exec -T auth-service npm test --if-present
+
+            - name: Ejecucion de pruebas - ops-service
+              run: docker compose exec -T ops-service npm test --if-present
+
+            - name: Ejecucion de pruebas - telemetry-service
+              run: docker compose exec -T telemetry-service test --if-present
+            
+            - name: Apagado y limpieza de los contenedores
+              if: always()
+              run: docker compose down -v
