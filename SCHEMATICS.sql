@@ -1,7 +1,3 @@
--- SCHEMATICS V1.3
-
-USE ops_dc;
-
 GRANT ALL PRIVILEGES ON ops_dc.* TO 'api_user'@'%';
 
 FLUSH PRIVILEGES;
@@ -112,6 +108,6 @@ INSERT INTO users (name, email, password, role)
 VALUES (
     'Alberto Espinoza',
     'developer@empresa.local',
-    '$2b$10$UPfQzet9Lc2CMJnjFDHX6O5MCXyxRDDcZ25NnrgRhftfVFHXsZ/LO', --hash de contraseña 123456
+    '$2b$10$UPfQzet9Lc2CMJnjFDHX6O5MCXyxRDDcZ25NnrgRhftfVFHXsZ/LO',
     'admin'
 );
