@@ -1,6 +1,6 @@
 FROM node:24-bookworm-slim
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package*.json ./
 
@@ -11,6 +11,6 @@ RUN npm config set strict-ssl false && \
 
 COPY . .
 
-EXPOSE 3000
+EXPOSE 3002
 
 CMD ["node", "server.js"]
