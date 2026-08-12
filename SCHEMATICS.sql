@@ -7,12 +7,14 @@ SET GLOBAL event_scheduler = ON;
 
 CREATE TABLE IF NOT EXISTS users (
     user_id CHAR(36) DEFAULT (UUID()) PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(128) NOT NULL,
-    role VARCHAR(10) NOT NULL,
+    role VARCHAR(20) NOT NULL,
     active BOOLEAN DEFAULT TRUE,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    last_login DATETIME NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS incidents (
@@ -103,11 +105,12 @@ END$$
 
 DELIMITER ;
 
+--Simple dato de prueba (usuario, puede ser eliminado antes de la produccion)
 
-INSERT INTO users (name, email, password, role)
+INSERT INTO users (username, name, email, role)
 VALUES (
+    'aespinoza',
     'Alberto Espinoza',
     'developer@empresa.local',
-    '$2b$10$UPfQzet9Lc2CMJnjFDHX6O5MCXyxRDDcZ25NnrgRhftfVFHXsZ/LO',
-    'admin'
+    'Administrador'
 );

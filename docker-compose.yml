@@ -57,6 +57,8 @@ services:
       - .env
     environment:
       - PORT=3001
+    volumes:
+      - ./backups_data:/app/backups
     depends_on:
       db-service:
         condition: service_healthy
