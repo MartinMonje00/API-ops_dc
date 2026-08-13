@@ -1,7 +1,7 @@
 {
   "name": "auth-service",
-  "version": "2.0.1",
-  "description": "",
+  "version": "2.1.2",
+  "description": "Servicio de autenticacion desacoplado de ops API",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Ningun test configurado aún\" && exit 0",

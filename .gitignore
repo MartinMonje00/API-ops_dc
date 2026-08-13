@@ -1,3 +1,4 @@
 node_modules/
 .github/
+backups_data/
 .env

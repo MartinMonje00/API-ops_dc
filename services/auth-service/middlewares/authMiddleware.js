@@ -1,20 +1,19 @@
 const jwt = require('jsonwebtoken');
 
-const verifyToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+module.exports = (req, res, next) => {
+    const token = req.headers['autorization'];
 
     if (!token) {
-        return res.status(401).json({ message: 'Acceso denegado. Token no proporcionado.' });
+        return res.status(401).json({ code: "AUTH_REQUIRED", message: "No tienes permiso" });
     }
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
         req.user = decoded;
+
         next();
     } catch (error) {
-        return res.status(403).json({ message: 'Token invalido o expirado' });
+        return res.status(403).json({ code: "INVALID_TOKEN" })
     }
 };
-
-module.exports = { verifyToken };

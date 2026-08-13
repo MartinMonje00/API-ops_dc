@@ -1,16 +1,54 @@
-const { Client } = require('ldapts');
 const db = require('../config/db');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const authenticateLDAP = (username, password) => {
-    //TODO Se va a hacer uso de ldapts o activedirectory2 dependiendo del tipo de autenticacion LDAP que se use al final
-};
+exports.login = async (req, res) => {
+    const { email, password } = req.body;
 
-const login = async (req,res) => {
-    
-};
+    if (!email && !password) {
+        return res.status(400).json({ code: 'AUTH_MISSING_FIELDS' });
+    }
 
-module.exports = { login };
+    try {
+        const [rows] = await db.query('SELECT user_id AS id, name, email, password, role, active FROM users WHERE email = ?', [email]);
 
-//!Despues cambiar todos los message por code
-//!NO OLVIDAR: Rellenar datos faltantes de LDAP en .env antes de hacer docker compose up
+        if (rows.length === 0) {
+            return res.status(401).json({ code: 'AUTH_INVALID_CREDENTIALS' })
+        }
+
+        const user = rows[0];
+
+        const correctPassword = await bcrypt.compare(password, user.password);
+
+        if (!correctPassword) {
+            return res.status(401).json({ code: 'AUTH_INVALID_CREDENTIALS' });
+        }
+
+        if (user.active === 0) {
+            return res.status(403).json({ code: 'AUTH_USER_DISABLED' });
+        }
+
+        const payload = {
+            id: user.id,
+            email: user.email,
+            role: user.role
+        };
+
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+            expiresIn: '8h'
+        });
+
+        res.json({
+            code: 'AUTH_SUCCESS',
+            token,
+            user: {
+                id: user.id,
+                name: user.name,
+                role: user.role
+            }
+        });
+    } catch (error) {
+        console.error('Error interno del servidor:', error);
+        res.status(500).json({ code: 'SERVER_INTERNAL_ERROR' });
+    }
+}

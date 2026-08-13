@@ -1,7 +1,5 @@
 FROM node:24-bookworm-slim
 
-RUN apk add --no-cache mariadb-client
-
 WORKDIR /app
 
 COPY package*.json ./
