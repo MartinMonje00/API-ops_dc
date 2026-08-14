@@ -3,7 +3,7 @@ const db = require('../config/db');
 const getUsers = async (req, res) => {
     try {
         const [users] = await db.query(
-            `SELECT user_id, name, username, email, role, last_login FROM users ORDER BY name ASC`
+            `SELECT user_id, name, username, email, role, active, last_login FROM users ORDER BY name ASC`
         );
         return res.status(200).json(users);
     } catch (error) {
