@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const telemetryRoutes = require('./routes/telemetryRoutes');
+const telemetryRoutes = require('./routes/telemetry.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3002;

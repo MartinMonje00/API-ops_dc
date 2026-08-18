@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const opsRoutes = require('./routes/docsRoutes');
+const opsRoutes = require('./routes/docs.routes');
 const validateJWT = require('./middlewares/validateJWT');
 
 const app = express();
