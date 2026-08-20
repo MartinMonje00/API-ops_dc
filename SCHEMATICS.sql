@@ -20,11 +20,11 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS contacts (
     contact_id char(36) DEFAULT (UUID()) PRIMARY KEY,
     name VARCHAR(80) NOT NULL,
+    company VARCHAR(100) NULL,
     charge VARCHAR(35) NULL,
     email VARCHAR(100) UNIQUE NULL,
     telefone INT(9) NULL,
-    type VARCHAR(25) DEFAULT 'Cliente',
-    notes VARCHAR(255) NULL
+    type VARCHAR(25) DEFAULT 'cliente'
 );
 
 CREATE TABLE IF NOT EXISTS incidents (
