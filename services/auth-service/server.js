@@ -12,9 +12,6 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 
-const userRoutes = require('./routes/user.routes');
-app.use('/api/users', userRoutes);
-
 const profileRoutes = require('./routes/profile.routes');
 app.use('/api/users/update', profileRoutes);
 

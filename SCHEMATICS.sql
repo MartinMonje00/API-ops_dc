@@ -114,13 +114,3 @@ BEGIN
 END$$
 
 DELIMITER ;
-
---Simple dato de prueba (usuario, puede ser eliminado antes de la produccion)
-
-INSERT INTO users (username, name, email, role)
-VALUES (
-    'aespinoza',
-    'Alberto Espinoza',
-    'developer@empresa.local',
-    'Administrador'
-);

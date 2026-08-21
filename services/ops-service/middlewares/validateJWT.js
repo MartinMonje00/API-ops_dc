@@ -15,7 +15,10 @@ const validateJWT = (req, res, next) => {
 
         next();
     } catch (error) {
-        return res.status(403).json({ code: 'INVALID_TOKEN_ERROR', error: 'Token invalido o expirado' });
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ code: 'TOKEN_EXPIRED', error: 'Token expirado. Inicie sesión nuevamente.' });
+        }
+        return res.status(401).json({ code: 'INVALID_TOKEN_ERROR', error: 'Token inválido o no autorizado.' });
     }
 };
 
