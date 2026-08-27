@@ -18,7 +18,7 @@ const validateTelemetryJWT = (req, res, next) => {
         req.device = verified;
         next();
     } catch (error) {
-        return res.status(403).json({ code: 'INVALID_API_KEY', error: 'API Key invalida o corrupta.' });
+        return res.status(401).json({ code: 'INVALID_API_KEY', error: 'API Key invalida o corrupta.' });
     }
 }
 

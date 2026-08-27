@@ -8,7 +8,8 @@ const {
 
 const {
     validateIncident,
-    validateLogBook
+    validateLogBook,
+    validateTask
 } = require('../middlewares/validateFields');
 
 const {
@@ -19,6 +20,14 @@ const {
     getContacts, createContact, updateContact, deleteContact
 } = require('../controllers/contacts.controller');
 
+const {
+    getTasks, createTask, updateTaskStatus
+} = require('../controllers/task.controller');
+
+router.get('/tasks', getTasks);
+router.post('/tasks', validateTask, createTask);
+router.patch('/tasks/:id', updateTaskStatus);
+
 router.get('/incidents', getIncidents);
 router.post('/incidents', validateIncident, createIncident);
 router.put('/incidents/:id', updateIncident);
@@ -27,8 +36,8 @@ router.get('/logBook', getLogs);
 router.post('/logBook', validateLogBook, createLog);
 router.put('/logBook/:id', updateLog);
 
-router.post('/backups/create', createBackup);
 router.get('/backups', listBackups);
+router.post('/backups/create', createBackup);
 router.get('/backups/download/:filename', downloadBackup);
 
 router.get('/contacts', getContacts);

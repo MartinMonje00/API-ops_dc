@@ -26,7 +26,22 @@ const validateLogBook = (req, res, next) => {
     next();
 };
 
+const validateTask = (req, res, next) => {
+    const { name, category } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ code: 'MISSING_REQUIRED_FIELD', error: 'el campo "nombre" es obligatorio' });
+    }
+
+    if (!category) {
+        return res.status(400).json({ code: 'MISSING_REQUIRED_FIELD', error: 'el campo "categoria" es obligatorio' });
+    }
+
+    next();
+}
+
 module.exports = {
     validateIncident,
-    validateLogBook
+    validateLogBook,
+    validateTask
 };
