@@ -29,15 +29,19 @@ const createTask = async (req, res) => {
             INSERT INTO tasks (name, description, priority, date)
             VALUES (?, ?, ?, ?)
         `;
+
+        const taskDate = (date && String(date).trim() !== '') ? date : null;
         
         const [result] = await db.query(query, [
             name,
-            description || null,
+            description ? description.trim() : null,
             priority,
-            date || null
+            taskDate
         ]);
 
-        return res.status(201).json({ code: '', message: 'Tarea creada exitosamente', data: rows[0] });
+        const [rows] = await db.query('SELECT * FROM tasks WHERE name = ?', [name.trim()]);
+
+        return res.status(201).json({ code: 'ROW_INSERT_OK', message: 'Tarea creada exitosamente', data: rows[0] });
     } catch (error) {
         console.error('Error al crear la tarea:', error);
         return res.status(500).json({ code: 'INTERNAL_SERVER_ERROR', message: 'Error interno del servidor' });
@@ -49,8 +53,8 @@ const updateTaskStatus = async (req, res) => {
         const { id } = req.params;
         const { action, status } = req.body;
 
-        const [existingRows] = await db.query('SELECT task_id FROM tasks WHERE task_id = ? LIMIT 1', [id]);
-        if (existingRows === 0) {
+        const [existingRows] = await db.query('SELECT task_id, status, date FROM tasks WHERE task_id = ? LIMIT 1', [id]);
+        if (!existingRows || existingRows.length === 0) {
             return res.status(404).json({ code: 'NO_FIELD_FOUND', message: 'La tarea especificada no existe' });
         }
 

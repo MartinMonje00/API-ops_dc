@@ -33,10 +33,12 @@ CREATE TABLE IF NOT EXISTS incidents (
     type VARCHAR(70) NULL,
     affected_service VARCHAR(128) NULL,
     description TEXT NOT NULL,
-    severity ENUM('Baja', 'Media', 'Alta', 'Critica') NOT NULL DEFAULT 'Baja',
+    severity VARCHAR(7) NOT NULL DEFAULT 'baja',
     startedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     endedAt DATETIME NULL,
-    state ENUM('Abierto', 'Cerrado') NOT NULL DEFAULT 'Abierto',
+    state VARCHAR(7) NOT NULL DEFAULT 'abierto',
+    affect BOOLEAN NOT NULL,
+    time_down NUMBER(5) NULL,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -44,9 +46,10 @@ CREATE TABLE IF NOT EXISTS incidents (
 CREATE TABLE IF NOT EXISTS logBook (
     log_id CHAR(36) DEFAULT (UUID()) PRIMARY KEY,
     user_id CHAR(36),
-    category VARCHAR(50),
+    title VARCHAR(25) NOT NULL,
+    category VARCHAR(25),
     description TEXT NOT NULL,
-    state ENUM('Abierto', 'Archivado', 'Cerrado') NOT NULL DEFAULT 'Abierto',
+    state VARCHAR(10) NOT NULL DEFAULT 'abierto',
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

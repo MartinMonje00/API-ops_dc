@@ -56,7 +56,7 @@ const createBackup = async (req, res) => {
         });
     } catch (error) {
         console.error('Error al crear el Backup:', error);
-        return res.status(500).json({ code: 'SERVER_INTERNAL_ERROR', message: 'Error al generar la copia de seguridad.' })
+        return res.status(500).json({ code: 'SERVER_INTERNAL_ERROR', error: 'Error al generar la copia de seguridad.' })
     }
 };
 
@@ -79,7 +79,7 @@ const listBackups = (req, res) => {
         return res.status(200).json(backupList);
     } catch (error) {
         console.error('Error al listar los archivos:', error);
-        return res.status(500).json({ code: 'SERVER_INTERNAL_ERROR', message: 'Error al obtener la lista de copias de seguridad.' });
+        return res.status(500).json({ code: 'SERVER_INTERNAL_ERROR', error: 'Error al obtener la lista de copias de seguridad.' });
     }
 };
 
@@ -97,7 +97,7 @@ const downloadBackup = (req, res) => {
         return res.download(filePath, sanitizedFilename);
     } catch (error) {
         console.error('');
-        return res.status(500).json({ code: 'SERVER_INTERNAL_ERROR', message: 'Error al procesar la descarga del archivo.' });
+        return res.status(500).json({ code: 'SERVER_INTERNAL_ERROR', error: 'Error al procesar la descarga del archivo.' });
     }
 };
 

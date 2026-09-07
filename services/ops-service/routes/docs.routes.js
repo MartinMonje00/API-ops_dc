@@ -30,11 +30,11 @@ router.patch('/tasks/:id', updateTaskStatus);
 
 router.get('/incidents', getIncidents);
 router.post('/incidents', validateIncident, createIncident);
-router.put('/incidents/:id', updateIncident);
+router.patch('/incidents/:id', updateIncident);
 
 router.get('/logBook', getLogs);
 router.post('/logBook', validateLogBook, createLog);
-router.put('/logBook/:id', updateLog);
+router.patch('/logBook/:id', updateLog);
 
 router.get('/backups', listBackups);
 router.post('/backups/create', createBackup);

@@ -1,12 +1,8 @@
 const validateIncident = (req, res, next) => {
-    const { name, description } = req.body;
+    const { name } = req.body;
 
     if (!name) {
         return res.status(400).json({ code: 'MISSING_REQUIRED_FIELD', error: 'El campo "Nombre" es obligatorios.' });
-    }
-
-    if (!description) {
-        return res.status(400).json({ code: 'MISSING_REQUIRED_FIELD', error: 'El campo "Descripcion" es obligatorios.' });
     }
 
     next();
@@ -27,13 +23,13 @@ const validateLogBook = (req, res, next) => {
 };
 
 const validateTask = (req, res, next) => {
-    const { name, category } = req.body;
+    const { name, priority } = req.body;
 
     if (!name) {
         return res.status(400).json({ code: 'MISSING_REQUIRED_FIELD', error: 'el campo "nombre" es obligatorio' });
     }
 
-    if (!category) {
+    if (!priority) {
         return res.status(400).json({ code: 'MISSING_REQUIRED_FIELD', error: 'el campo "categoria" es obligatorio' });
     }
 
