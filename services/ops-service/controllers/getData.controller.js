@@ -53,7 +53,7 @@ const getDashboardIncidents = async (req, res) => {
 
         const [rows] = await db.query(query);
 
-        return res.status(200).json({ code: 'DATA_GET_OK', data: rows[0] });
+        return res.status(200).json({ code: 'DATA_GET_OK', data: rows });
     } catch (error) {
         console.error('Error al recuperar datos de incidentes para el dashboard:', error);
         return res.status(500).json({ code: 'INTERNAL_SERVER_ERROR', error: 'Error interno del servidor.' });
@@ -74,7 +74,7 @@ const getDashboardTasks = async (req, res) => {
 
         const [rows] = await db.query(query);
 
-        return res.status(200).json({ code: 'DATA_GET_OK', data: rows[0] });
+        return res.status(200).json({ code: 'DATA_GET_OK', data: rows });
     } catch (error) {
         console.error('Error al recuperar datos de tareas para el dashboard:', error);
         return res.status(500).json({ code: 'INTERNAL_SERVER_ERROR', error: 'Error interno del servidor.' });
