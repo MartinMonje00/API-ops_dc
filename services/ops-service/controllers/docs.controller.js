@@ -5,6 +5,18 @@ const calculateTimeDown = (affect, startedAt, endedAt) => {
 
     const start = new Date(startedAt);
     const end = new Date(endedAt);
+
+    if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) {
+        return null;
+    }
+
+    return Math.floor((end - start) / (1000 * 60));
+};
+
+const calculateTimePass = (startedAt, endedAt) => {
+    const start = new Date(startedAt);
+    const end = new Date(endedAt);
+
     if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) {
         return null;
     }
@@ -40,18 +52,21 @@ const createIncident = async (req, res) => {
         const finalAffect = affect ? 1 : 0;
 
         const computedTimeDown = calculateTimeDown(finalAffect, finalStartedAt, finalEndedAt);
+        const computedTimePass = calculateTimePass(finalStartedAt, finalEndedAt);
 
         const query = `
             INSERT INTO incidents (
-                name, type, affected_service, description,
-                severity, startedAt, endedAt, state, affect, time_down
+                name, type, affected_service, description, severity,
+                startedAt, endedAt, state, affect, time_down,
+                time_pass
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         await db.query(query, [
             name, type || null, affected_service || null, description, finalSeverity,
-            finalStartedAt, finalEndedAt, finalState, finalAffect, computedTimeDown
+            finalStartedAt, finalEndedAt, finalState, finalAffect, computedTimeDown,
+            computedTimePass
         ]);
 
         const [rows] = await db.query(
@@ -84,10 +99,11 @@ const updateIncident = async (req, res) => {
 
         const now = new Date();
         const computedTimeDown = calculateTimeDown(incident.affect, incident.startedAt, now);
+        const computedTimePass = calculateTimePass(incident.startedAt, now);
 
         await db.query(
-            "UPDATE incidents SET state = 'cerrado', endedAt = ?, time_down = ? WHERE incident_id = ?",
-            [now, computedTimeDown, id]
+            "UPDATE incidents SET state = 'cerrado', endedAt = ?, time_down = ?, time_pass = ? WHERE incident_id = ?",
+            [now, computedTimeDown, computedTimePass, id]
         );
 
         const [rows] = await db.query('SELECT * FROM incidents WHERE incident_id = ?', [id]);

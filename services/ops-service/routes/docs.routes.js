@@ -24,6 +24,10 @@ const {
     getTasks, createTask, updateTaskStatus
 } = require('../controllers/task.controller');
 
+const {
+    getDatacenterData, getDashboardIncidents, getDashboardTasks
+} = require('../controllers/getData.controller');
+
 router.get('/tasks', getTasks);
 router.post('/tasks', validateTask, createTask);
 router.patch('/tasks/:id', updateTaskStatus);
@@ -44,5 +48,10 @@ router.get('/contacts', getContacts);
 router.post('/contacts', createContact);
 router.put('/contacts/:id', updateContact);
 router.delete('/contacts/:id', deleteContact);
+
+router.get('/Dashboard', getDatacenterData);
+
+router.get('/resume/incidents', getDashboardIncidents);
+router.get('/resume/tasks', getDashboardTasks);
 
 module.exports = router;
