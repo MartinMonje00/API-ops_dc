@@ -21,7 +21,7 @@ const getDatacenterData = async (req, res) => {
             CROSS JOIN (
                 SELECT
                     COUNT(CASE WHEN status IN (1, 2) THEN 1 END) AS total_status,
-                    COUNT(CASE WHEN \`date\` BETWEEN NOW() AND NOW() + INTERVAL 7 DAY THEN 1 END) AS total_next
+                    COUNT(CASE WHEN status IN (1, 2) AND \`date\` BETWEEN NOW() AND NOW() + INTERVAL 7 DAY THEN 1 END) AS total_next
                 FROM tasks
             ) ts;
         `;
